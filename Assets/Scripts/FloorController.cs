@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class FloorController : MonoBehaviour
 {
-    
+
     public GameObject floorTile1, floorTile2;
+
+    public GameObject[] tiles;
 
     private void FixedUpdate()
     {
@@ -15,11 +18,12 @@ public class FloorController : MonoBehaviour
 
         if (floorTile2.transform.position.x < 0f)
         {
-            floorTile1.transform.position += new Vector3(32f, 0f, 0f);
+            var newTile = Instantiate(tiles[Random.Range(0, tiles.Length)],
+                floorTile2.transform.position + new Vector3(16f, 0f, 0f), Quaternion.identity);
+            Destroy(floorTile1);
             
-            var tmp = floorTile1;
             floorTile1 = floorTile2;
-            floorTile2 = tmp;
+            floorTile2 = newTile;
         }
         
     }
