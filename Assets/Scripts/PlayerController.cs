@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,6 +36,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!GameManager.instance.inGame) return;
+        
         if(IsGrounded() && Time.time >= timestamp)
         {
             if (jumped || doubleJumped)
@@ -58,11 +61,23 @@ public class PlayerController : MonoBehaviour
                 doubleJumped = true;
             }
         }
-
-        /*if (Input.GetKey(KeyCode.Space) && rb.velocity.y <= 0)
-        {
-            
-        }*/
         
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        //ako je player "udario" GameObject s Tagom "Obstacle", pokreni funkciju playerDeath()
+        if (other.CompareTag("Obstacle"))
+        {
+            PlayerDeath();
+        }
+    }
+
+    void PlayerDeath()
+    {
+        //zaustavi svu fiziku koja utječe na player-a
+        GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+        
+        GameManager.instance.GameOver();
     }
 }
